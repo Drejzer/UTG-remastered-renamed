@@ -21,7 +21,7 @@ int depth=1;
 
 int roll(int d)
 {
-return d>1?((rand()%d)+1):0;
+return d>1?((rand()%d)+1):1;
 }
 
 class Creature;
@@ -185,7 +185,8 @@ Player hero("");
 class Training : public Creature
 	{
 	public:
-		int act();
+		virtual int act();
+		Training();
 	};
 
 class Floor
@@ -194,7 +195,6 @@ class Floor
 		int xsize,ysize;
 		vector<vector <Room *> > layout;
 		Floor();
-#warning TODO: floor generation
 	};
 
 Floor mapa;
@@ -204,7 +204,7 @@ int main()
 	srand(time(NULL));
 	depth=1;
 	string charname;
-	mapa=Floor();
+	vector<Creature*> test;
 	cout<<"Please, input your Character's name:"<<endl;
 	getline(cin,charname);
 	hero=Player(charname);
@@ -222,15 +222,16 @@ Floor::Floor()
 	if(depth-1)
 		{
 		bool hasexit=0,hasupgrade=0;
-		xsize=1+roll(depth);
-		ysize=2+depth-xsize;
+		xsize=1+roll(depth+1);
+		ysize=3+depth-xsize;
 		layout.resize(xsize);
 		for(int i=0;i<xsize;++i)
 			{
 			cout<<".";
 			for(int ii=0;ii<ysize;++ii)
 				{
-
+				layout[i][ii].push_back(new Crossroads);
+				#warning TODO: Floor gen
 				}
 			}
 		}
@@ -242,11 +243,11 @@ Floor::Floor()
 		layout.resize(1);
 		layout[0].push_back((new Crossroads(0,0)));
 		cout<<".";
-		layout[0].push_back((Room *)(new Arena(0,1)));
+		layout[0].push_back(new Arena(0,1));
 		cout<<".";
-		layout[0].push_back((Room *)(new Upgrade(0,2)));
+		layout[0].push_back(new Upgrade(0,2));
 		cout<<".";
-		layout[0].push_back((Room *)(new Exit(0,3)));
+		layout[0].push_back(new Exit(0,3));
 		cout<<".";
 		}
 	cout<<"\nDone!"<<endl;
@@ -268,7 +269,7 @@ void Creature::attack(Creature *target)
 
 int Training::act()
 	{
-	cout<<"It can't do anything..."<<endl;
+	cout<<"It just stands there..."<<endl;
 	return 0;
 	}
 
@@ -282,28 +283,33 @@ int Player::act()
 		case 'a':
 		case 'A':
 				{
+				cin.clear();
 				return 1;
 				}
 		case 'm':
 		case 'M':
 				{
+				cin.clear();
 				return 2;
 				}
 		case 'l':
 		case 'L':
 				{
-				return 3;
+				cin.clear();
+				return 4;
 				}
 		case 's':
 		case 'S':
 				{
 				cout<<getname()<<"\nAtk: "<<getatk()<<"\nDef: "<<getdef()<<"\n Dmg: "<<getdmg()<<"\n HP: "<<gethp()<<"/"<<getmaxhp()<<endl;
+				cin.clear();
 				return 0;
 				}
 		case 'i':
 		case 'I':
 				{
-				return 4;
+				cin.clear();
+				return 3;
 				}
 		case 'K':
 				{
@@ -312,6 +318,7 @@ int Player::act()
 					cin>>action;
 					if(action=="MYSELF")
 						{
+						cin.clear();
 						cout<<hero.getname()<<" commited sucide."<<endl;
 						hero.Hitpoints=-1;
 						return -1;
@@ -321,6 +328,7 @@ int Player::act()
 		default:
 				{
 				cout<<"The options are:\n attack\n move\n look\n status\n interact"<<endl;
+				cin.clear();
 				return 0;
 				}
 		}
@@ -346,6 +354,17 @@ Player::Player(string charname)
 	upgradecost=1;
 	}
 
+Training::Training()
+{
+name = "Training Dummy";
+Atk=-1000;
+Def=-5;
+maxHitpoints=2;
+Hitpoints=2;
+Points=1;
+Dmg=0;
+}
+
 Crossroads::Crossroads(int x,int y)
 	{
 	position=pair<int,int>(x,y);
@@ -355,6 +374,16 @@ Arena::Arena(int x,int y)
 	{
 	position=pair<int,int>(x,y);
 	flag=COMBAT;
+	for(int i=roll(depth);i>0;--i)
+		{
+      switch((depth>1)?roll(3):0)
+			{
+			case 0:
+				{
+				population.push(new Training)
+				}
+			}
+		}
 	}
 
 Upgrade::Upgrade(int x,int y)
@@ -373,24 +402,33 @@ void Room::RoomAction()
 	switch(hero.act())
 		{
 		case 1:
-				{
-				RCombat();
-				break;
-				}
+			{
+			RCombat();
+			break;
+			}
 		case 2:
-				{
-				RLeave();
-				break;
-				}
+			{
+			RLeave();
+			break;
+			}
+		case 3:
+			{
+			RInteract();
+			break;
+			}
+		case 4:
+			{
+			RLook();
+			}
 		case 0:
-				{
-				cout<<"Sooo...."<<endl;
-				break;
-				}
+			{
+			cout<<"Sooo...."<<endl;
+			break;
+			}
 		case -1:
-				{
-				break;
-				}
+			{
+			break;
+			}
 		}
 	}
 void Crossroads::RLeave()
@@ -455,6 +493,7 @@ void Crossroads::RLeave()
 				cout<<"You mean WHERE?"<<endl;
 				}
 		}
+	cin.clear();
 	}
 
 void Crossroads::RCombat()
@@ -505,7 +544,7 @@ hero.attack(population.top());
 if(population.top()->gethp()<0)
 	{
 	cout<<population.top()->getname()<<" has been vanquished!"<<endl;
-	hero.modPoints((Enemy)(*population.top()).loot)
+	hero.modPoints(population.top()->getPoints());
 	population.pop();
 	if(population.empty())
 		{
