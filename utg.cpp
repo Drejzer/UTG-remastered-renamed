@@ -17,6 +17,7 @@
 
 using namespace std;
 
+
 int depth=1;
 
 int roll(int d)
@@ -189,6 +190,14 @@ class Training : public Creature
 		Training();
 	};
 
+class Placeholder1 : public Creature
+{
+public:
+virtual int act();
+virtual void attack(Creature *target);
+Placeholder1();
+};
+
 class Floor
 	{
 	public:
@@ -221,17 +230,44 @@ Floor::Floor()
 	cout<<"Genrating Floor"<<depth;
 	if(depth-1)
 		{
-		bool hasexit=0,hasupgrade=0;
 		xsize=1+roll(depth+1);
 		ysize=3+depth-xsize;
+		int exity=-1+roll(ysize),exitx=-1+roll(xsize),ux=roll(xsize-2),uy=roll(ysize-2);
+		while(exitx==ux&&exity==uy)
+			{
+			(ysize-2)==0?ux=roll(xsize -2):uy=roll(ysize-2);
+			}
 		layout.resize(xsize);
 		for(int i=0;i<xsize;++i)
 			{
 			cout<<".";
 			for(int ii=0;ii<ysize;++ii)
 				{
-				layout[i].push_back(new Crossroads(i,ii));
-				#warning TODO: Floor gen
+				if(i==exitx&&ii==exity)
+					{
+					layout[i].push_back(new Exit(i,ii));
+					}
+				else if(i==ux&&ii==uy)
+					{
+					layout[i].push_back(new Upgrade(i,ii));
+					}
+				else
+					{
+					switch(roll(6))
+						{
+						case 1:
+						case 6:
+							{
+							layout[i].push_back(new Arena(i,ii));
+							break;
+							}
+						default:
+							{
+							layout[i].push_back(new Crossroads(i,ii));
+							break;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -257,12 +293,12 @@ void Creature::attack(Creature *target)
 	{
 	if(getatk()+roll(20)>target->getdef()+roll(20))
 		{
-		cout<<"Hits";
+		cout<<getname()<<" Hits";
 		target->modhp(-max(Dmg,(long)0));
 		}
 	else
 		{
-		cout<<"Misses";
+		cout<<getname()<<" Misses";
 		}
 	cout<<endl;
 	}
@@ -273,43 +309,77 @@ int Training::act()
 	return 0;
 	}
 
+int Placeholder1::act()
+{
+attack(&hero);
+return 1;
+}
+
+void Placeholder1::attack(Creature *target)
+{
+cout<<getname()<<" attacks wildly and";
+if(getatk()+roll(20)>target->getdef()+roll(20))
+		{
+		cout<<getname()<<" Hits";
+		target->modhp(-max(Dmg,(long)0));
+		}
+else
+		{
+		cout<<getname()<<" Misses";
+		}
+if(getatk()-7+roll(20)>target->getdef()+roll(20))
+	{
+	cout<<getname()<<" and Hits";
+	target->modhp(-max(Dmg,(long)0));
+	}
+else
+	{
+	cout<<getname()<<"and Misses";
+	}
+	cout<<endl;
+}
+
 int Player::act()
 	{
 	cout<<"What do you do?"<<endl;
 	string action;
-	cin>>action;
+	if((cin>>action).eof())
+		{
+		hero.Hitpoints=-1;
+		return -1;
+		}
 	switch(action[0])
 		{
 		case 'a':
 		case 'A':
 				{
 				cin.clear();
-				return 1;
+				cin.ignore(100,'\n');				return 1;
 				}
 		case 'm':
 		case 'M':
 				{
 				cin.clear();
-				return 2;
+				cin.ignore(100,'\n');				return 2;
 				}
 		case 'l':
 		case 'L':
 				{
 				cin.clear();
-				return 4;
+				cin.ignore(100,'\n');				return 4;
 				}
 		case 's':
 		case 'S':
 				{
 				cout<<getname()<<"\nAtk: "<<getatk()<<"\nDef: "<<getdef()<<"\n Dmg: "<<getdmg()<<"\n HP: "<<gethp()<<"/"<<getmaxhp()<<endl;
 				cin.clear();
-				return 0;
+				cin.ignore(100,'\n');				return 0;
 				}
 		case 'i':
 		case 'I':
 				{
 				cin.clear();
-				return 3;
+				cin.ignore(100,'\n');				return 3;
 				}
 		case 'K':
 				{
@@ -319,7 +389,7 @@ int Player::act()
 					if(action=="MYSELF")
 						{
 						cin.clear();
-						cout<<hero.getname()<<" commited sucide."<<endl;
+				cin.ignore(100,'\n');						cout<<hero.getname()<<" commited sucide."<<endl;
 						hero.Hitpoints=-1;
 						return -1;
 						}
@@ -329,6 +399,7 @@ int Player::act()
 				{
 				cout<<"The options are:\n attack\n move\n look\n status\n interact"<<endl;
 				cin.clear();
+				cin.ignore(100,'\n');
 				return 0;
 				}
 		}
@@ -365,6 +436,17 @@ Points=1;
 Dmg=0;
 }
 
+Placeholder1::Placeholder1()
+{
+name="Placeholder1 ";
+Atk=0+roll(depth/2);
+Def=0+roll(depth/2);
+maxHitpoints=1+roll(depth/2);
+Dmg=1+roll(depth/5);
+Hitpoints=maxHitpoints;
+Points=2+roll(depth/4);
+}
+
 Crossroads::Crossroads(int x,int y)
 	{
 	position=pair<int,int>(x,y);
@@ -381,7 +463,17 @@ Arena::Arena(int x,int y)
 			case 0:
 				{
 				population.push(new Training);
+				break;
 				}
+			case 1:
+				{
+				population.push(new Placeholder1);
+				break;
+				}
+			default:
+			 {
+			 population.push(new Training);
+			 }
 			}
 		}
 	}
@@ -395,6 +487,27 @@ Exit::Exit(int x,int y)
 	{
 	position=pair<int,int>(x,y);
 	flag=COMBAT|EXIT;
+	flag=COMBAT;
+	for(int i=roll(depth);i>0;--i)
+		{
+      switch((depth>1)?roll(3):0)
+			{
+			case 0:
+				{
+				population.push(new Training);
+				break;
+				}
+			case 1:
+				{
+				population.push(new Placeholder1);
+				break;
+				}
+			default:
+			 {
+			 population.push(new Training);
+			 }
+			}
+		}
 	}
 
 void Room::RoomAction()
@@ -427,6 +540,7 @@ void Room::RoomAction()
 			}
 		case -1:
 			{
+			cout<<"Huh... that was unexpected"<<endl;
 			break;
 			}
 		}
@@ -435,7 +549,11 @@ void Crossroads::RLeave()
 	{
 	cout<<"North, West, South or East?"<<endl;
 	string dawae;
-	cin>>dawae;
+	if((cin>>dawae).eof())
+		{
+		hero.modhp(-hero.getmaxhp());
+		return;
+		}
 	switch(dawae[0])
 		{
 		case 'N':
@@ -493,8 +611,9 @@ void Crossroads::RLeave()
 				cout<<"You mean WHERE?"<<endl;
 				}
 		}
-	cin.clear();
-	}
+cin.clear();
+cin.ignore(100,'\n');
+}
 
 void Crossroads::RCombat()
 	{
@@ -517,7 +636,7 @@ if(flag&BONUS)
 			{
 			if(roll(100)>75)
 				{
-				hero.modhp(1);
+				hero.modmaxhp(1);
 				cout<<"A healthy... whatever. Got more HP"<<endl;
 				break;
 				}
@@ -543,7 +662,7 @@ void Arena::RCombat()
 if(!population.empty())
 	{
 	hero.attack(population.top());
-	if(population.top()->gethp()<0)
+	if(population.top()->gethp()<=0)
 		{
 		cout<<population.top()->getname()<<" has been vanquished!"<<endl;
 		hero.modPoints(population.top()->getPoints());
@@ -569,7 +688,11 @@ else
 	{
 	cout<<"North, West, South or East?"<<endl;
 	string dawae;
-	cin>>dawae;
+	if((cin>>dawae).eof())
+		{
+		hero.modhp(-hero.getmaxhp());
+		return;
+		}
 	switch(dawae[0])
 		{
 		case 'N':
@@ -713,7 +836,11 @@ void Upgrade::RLeave()
 {
 cout<<"North, West, South or East?"<<endl;
 string dawae;
-cin>>dawae;
+if((cin>>dawae).eof())
+		{
+		hero.modhp(-hero.getmaxhp());
+		return;
+		}
 switch(dawae[0])
 	{
 	case 'N':
@@ -792,7 +919,11 @@ else
 	{
 	cout<<"What aspect do you want to enchance?\nPrecision(+atk)\nReflexes(+def)\nStrenght(+dmg)\nToughness(+HP)"<<endl;
 	string levelup;
-	cin>>levelup;
+	if((cin>>levelup).eof())
+		{
+		hero.modhp(-hero.getmaxhp());
+		return;
+		}
 	switch(levelup[0])
 		{
 		case 'p':
@@ -864,7 +995,11 @@ void Exit::RLeave()
 {
 cout<<"North, West, South or East?"<<endl;
 string dawae;
-cin>>dawae;
+if((cin>>dawae).eof())
+		{
+		hero.modhp(-hero.getmaxhp());
+		return;
+		}
 switch(dawae[0])
 	{
 	case 'N':
@@ -934,7 +1069,7 @@ void Exit::RCombat()
 if(!population.empty())
 	{
 	hero.attack(population.top());
-	if(population.top()->gethp()<0)
+	if(population.top()->gethp()<=0)
 		{
 		cout<<population.top()->getname()<<" has been vanquished!"<<endl;
 		hero.modPoints(population.top()->getPoints());
@@ -951,7 +1086,16 @@ else cout<<"There is nothing to attack!"<<endl;
 
 void Exit::RInteract()
 {
-cout<<"You delve deeper into the abyss..."<<endl;
-depth++;
-mapa=Floor();
+if(population.empty())
+	{
+	cout<<"You delve deeper into the abyss..."<<endl;
+	depth++;
+	mapa=Floor();
+	hero.relocate(0,0);
+	}
+else
+	{
+	cout<<population.top()->getname()<<" bolcks the way"<<endl;
+	population.top()->act();
+	}
 }
