@@ -230,7 +230,7 @@ Floor::Floor()
 			cout<<".";
 			for(int ii=0;ii<ysize;++ii)
 				{
-				layout[i][ii].push_back(new Crossroads);
+				layout[i].push_back(new Crossroads(i,ii));
 				#warning TODO: Floor gen
 				}
 			}
@@ -380,7 +380,7 @@ Arena::Arena(int x,int y)
 			{
 			case 0:
 				{
-				population.push(new Training)
+				population.push(new Training);
 				}
 			}
 		}
@@ -540,18 +540,22 @@ else
 
 void Arena::RCombat()
 {
-hero.attack(population.top());
-if(population.top()->gethp()<0)
+if(!population.empty())
 	{
-	cout<<population.top()->getname()<<" has been vanquished!"<<endl;
-	hero.modPoints(population.top()->getPoints());
-	population.pop();
-	if(population.empty())
+	hero.attack(population.top());
+	if(population.top()->gethp()<0)
 		{
-		flag^=COMBAT;
-		return;
+		cout<<population.top()->getname()<<" has been vanquished!"<<endl;
+		hero.modPoints(population.top()->getPoints());
+		population.pop();
+		if(population.empty())
+			{
+			flag^=COMBAT;
+			return;
+			}
 		}
 	}
+else cout<<"There is nothing to attack!"<<endl;
 }
 
 void Arena::RLeave()
@@ -927,22 +931,27 @@ if(flag&COMBAT)
 
 void Exit::RCombat()
 {
-hero.attack(population.top());
-if(population.top()->gethp()<0)
+if(!population.empty())
 	{
-	cout<<population.top()->getname()<<" has been vanquished!"<<endl;
-	population.pop();
-	if(population.empty())
+	hero.attack(population.top());
+	if(population.top()->gethp()<0)
 		{
-		flag^=COMBAT;
-		return;
+		cout<<population.top()->getname()<<" has been vanquished!"<<endl;
+		hero.modPoints(population.top()->getPoints());
+		population.pop();
+		if(population.empty())
+			{
+			flag^=COMBAT;
+			return;
+			}
 		}
 	}
+else cout<<"There is nothing to attack!"<<endl;
 }
 
 void Exit::RInteract()
 {
-cout<<"You delve deeper int the abyss..."<<endl;
+cout<<"You delve deeper into the abyss..."<<endl;
 depth++;
 mapa=Floor();
 }
