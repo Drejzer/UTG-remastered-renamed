@@ -268,6 +268,10 @@ Floor::Floor()
 							}
 						}
 					}
+				if(roll(100)>95)
+					{
+					layout[i][ii]->
+					}
 				}
 			}
 		}
@@ -917,7 +921,7 @@ else if(hero.getPoints()<hero.getupgradecost())
 	}
 else
 	{
-	cout<<"What aspect do you want to enchance?\nPrecision(+atk)\nReflexes(+def)\nStrenght(+dmg)\nToughness(+HP)"<<endl;
+	cout<<"What aspect do you want to enchance?\nPrecision(+atk)\nReflexes(+def)\nStrength(+dmg)\nToughness(+HP)"<<endl;
 	string levelup;
 	if((cin>>levelup).eof())
 		{
