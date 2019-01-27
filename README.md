@@ -5,4 +5,4 @@ AS an assignment for Programming classes.
 
 compile with:
 
-g++ utg.cpp Room.\* Creature.\* Floor.\*
+g++ utg.cpp Room.cpp Creature.cpp Floor.cpp
