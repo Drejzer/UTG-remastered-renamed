@@ -60,7 +60,7 @@ Floor::Floor()
 					}
 				if(roll(100)>95)
 					{
-					layout[i][ii]->setflag(layout[i][ii]->getflag()&BONUS);
+					layout[i][ii]->setflag(layout[i][ii]->getflag()|BONUS);
 					}
 				}
 			}

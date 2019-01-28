@@ -140,7 +140,7 @@ void Crossroads::RLeave()
 		case 'W':
 		case 'w':
 				{
-				if(0<=position.first-1)
+				if(0<position.first-1)
 					{
 					cout<<"Westwards, then!"<<endl;
 					hero.relocate(position.first,position.second+1);
@@ -152,7 +152,7 @@ void Crossroads::RLeave()
 		case 'S':
 		case 's':
 				{
-				if(0<=position.second-1)
+				if(0<position.second-1)
 					{
 					cout<<"Southwards, then!"<<endl;
 					hero.relocate(position.first,position.second+1);
@@ -280,7 +280,7 @@ void Arena::RLeave()
 			case 'W':
 			case 'w':
 					{
-					if(0<=position.first-1)
+					if(0<position.first-1)
 						{
 						cout<<"Westwards, then!"<<endl;
 						hero.relocate(position.first,position.second+1);
@@ -292,7 +292,7 @@ void Arena::RLeave()
 			case 'S':
 			case 's':
 					{
-					if(0<=position.second-1)
+					if(0<position.second-1)
 						{
 						cout<<"Southwards, then!"<<endl;
 						hero.relocate(position.first,position.second+1);
@@ -428,7 +428,7 @@ void Upgrade::RLeave()
 		case 'W':
 		case 'w':
 				{
-				if(0<=position.first-1)
+				if(0<position.first-1)
 					{
 					cout<<"Westwards, then!"<<endl;
 					hero.relocate(position.first,position.second+1);
@@ -440,7 +440,7 @@ void Upgrade::RLeave()
 		case 'S':
 		case 's':
 				{
-				if(0<=position.second-1)
+				if(0<position.second-1)
 					{
 					cout<<"Southwards, then!"<<endl;
 					hero.relocate(position.first,position.second+1);
@@ -587,7 +587,7 @@ void Exit::RLeave()
 		case 'W':
 		case 'w':
 				{
-				if(0<=position.first-1)
+				if(0<position.first-1)
 					{
 					cout<<"Westwards, then!"<<endl;
 					hero.relocate(position.first,position.second+1);
@@ -599,7 +599,7 @@ void Exit::RLeave()
 		case 'S':
 		case 's':
 				{
-				if(0<=position.second-1)
+				if(0<position.second-1)
 					{
 					cout<<"Southwards, then!"<<endl;
 					hero.relocate(position.first,position.second+1);
