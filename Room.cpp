@@ -143,7 +143,7 @@ void Crossroads::RLeave()
 				if(0<position.first-1)
 					{
 					cout<<"Westwards, then!"<<endl;
-					hero.relocate(position.first,position.second+1);
+					hero.relocate(position.first-1,position.second);
 					}
 				else
 					cout<<"It would be a good idea...\n BUT THERE IS NO PASSAGE!"<<endl;
@@ -155,7 +155,7 @@ void Crossroads::RLeave()
 				if(0<position.second-1)
 					{
 					cout<<"Southwards, then!"<<endl;
-					hero.relocate(position.first,position.second+1);
+					hero.relocate(position.first,position.second-1);
 					}
 				else
 					cout<<"It would be a good idea...\n BUT THERE IS NO PASSAGE!"<<endl;
@@ -283,7 +283,7 @@ void Arena::RLeave()
 					if(0<position.first-1)
 						{
 						cout<<"Westwards, then!"<<endl;
-						hero.relocate(position.first,position.second+1);
+						hero.relocate(position.first-1,position.second);
 						}
 					else
 						cout<<"It would be a good idea...\n BUT THERE IS NO PASSAGE!"<<endl;
@@ -295,7 +295,7 @@ void Arena::RLeave()
 					if(0<position.second-1)
 						{
 						cout<<"Southwards, then!"<<endl;
-						hero.relocate(position.first,position.second+1);
+						hero.relocate(position.first,position.second-1);
 						}
 					else
 						cout<<"It would be a good idea...\n BUT THERE IS NO PASSAGE!"<<endl;
@@ -431,7 +431,7 @@ void Upgrade::RLeave()
 				if(0<position.first-1)
 					{
 					cout<<"Westwards, then!"<<endl;
-					hero.relocate(position.first,position.second+1);
+					hero.relocate(position.first-1,position.second);
 					}
 				else
 					cout<<"It would be a good idea...\n BUT THERE IS NO PASSAGE!"<<endl;
@@ -443,7 +443,7 @@ void Upgrade::RLeave()
 				if(0<position.second-1)
 					{
 					cout<<"Southwards, then!"<<endl;
-					hero.relocate(position.first,position.second+1);
+					hero.relocate(position.first,position.second-1);
 					}
 				else
 					cout<<"It would be a good idea...\n BUT THERE IS NO PASSAGE!"<<endl;
@@ -590,7 +590,7 @@ void Exit::RLeave()
 				if(0<position.first-1)
 					{
 					cout<<"Westwards, then!"<<endl;
-					hero.relocate(position.first,position.second+1);
+					hero.relocate(position.first-1,position.second);
 					}
 				else
 					cout<<"It would be a good idea...\n BUT THERE IS NO PASSAGE!"<<endl;
@@ -602,7 +602,7 @@ void Exit::RLeave()
 				if(0<position.second-1)
 					{
 					cout<<"Southwards, then!"<<endl;
-					hero.relocate(position.first,position.second+1);
+					hero.relocate(position.first,position.second-1);
 					}
 				else
 					cout<<"It would be a good idea...\n BUT THERE IS NO PASSAGE!"<<endl;
